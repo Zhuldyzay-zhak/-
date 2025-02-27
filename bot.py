@@ -52,7 +52,7 @@ async def start_message(message: types.Message):
 # Запуск бота
 async def main():
     print("🤖 Бот запущен и ждёт команды!")
-    dp.include_router(dp)  # Добавляем роутеры
+    dp.include_routers()  # В новой версии `include_router` не нужен
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

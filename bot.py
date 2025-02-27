@@ -3,7 +3,7 @@ import sqlite3
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InputFile
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 # Загружаем API-токен из переменных среды (Render)
 API_TOKEN = os.getenv("API_TOKEN")
@@ -13,7 +13,7 @@ if not API_TOKEN:
     raise ValueError("❌ Ошибка: API_TOKEN не найден! Убедись, что он добавлен в Render.")
 
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher()  # Создаём диспетчер без аргументов (для Aiogram 3.x)
+dp = Dispatcher()  # В новой версии Aiogram 3.x Dispatcher создаётся без аргументов
 
 # Подключение к базе данных
 conn = sqlite3.connect("users.db", check_same_thread=False)
@@ -30,9 +30,10 @@ cursor.execute("""
 """)
 conn.commit()
 
-# Кнопки главного меню
-kb = ReplyKeyboardMarkup(resize_keyboard=True)
-kb.add(KeyboardButton("Найти подругу"), KeyboardButton("Мой профиль"))
+# Кнопки главного меню (исправленный вариант)
+kb = ReplyKeyboardMarkup(keyboard=[
+    [KeyboardButton(text="Найти подругу"), KeyboardButton(text="Мой профиль")]
+], resize_keyboard=True)
 
 # Обработчик команды /start
 @dp.message(Command("start"))
@@ -51,7 +52,7 @@ async def start_message(message: types.Message):
 # Запуск бота
 async def main():
     print("🤖 Бот запущен и ждёт команды!")
-    dp.include_router(dp)  # Добавляем роутеры (новый формат Aiogram 3.x)
+    dp.include_router(dp)  # Добавляем роутеры
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

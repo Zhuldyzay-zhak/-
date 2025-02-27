@@ -1,5 +1,8 @@
 from aiogram import Bot, Dispatcher, types
-from aiogram import executor
+from aiogram import Bot, Dispatcher
+from aiogram.types import Message
+from aiogram.filters import Command
+import asyncio
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InputFile
 import sqlite3
 

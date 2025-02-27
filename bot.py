@@ -1,59 +1,47 @@
 import os
-import sqlite3
 import asyncio
+import sqlite3
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-# Загружаем API-токен из переменных среды (Render)
-API_TOKEN = os.getenv("API_TOKEN")
+# 1. Убедись, что API-токен загружается корректно
+API_TOKEN = os.getenv("API_TOKEN")  # Токен должен быть установлен в переменной окружения!
 
-# Проверяем, что токен загружен корректно
 if not API_TOKEN:
-    raise ValueError("❌ Ошибка: API_TOKEN не найден! Убедись, что он добавлен в Render.")
+    raise ValueError("API_TOKEN отсутствует! Установите переменную окружения.")
 
+# 2. Инициализация бота и диспетчера
 bot = Bot(token=API_TOKEN)
-dp = Dispatcher()  # В новой версии Aiogram 3.x Dispatcher создаётся без аргументов
+dp = Dispatcher()
 
-# Подключение к базе данных
+# 3. Подключение к базе данных
 conn = sqlite3.connect("users.db", check_same_thread=False)
 cursor = conn.cursor()
+
 cursor.execute("""
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY,
-        name TEXT,
-        age INTEGER,
-        city TEXT,
-        interests TEXT,
-        photo TEXT
-    )
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    age INTEGER,
+    city TEXT,
+    interests TEXT
+)
 """)
 conn.commit()
 
-# Кнопки главного меню (исправленный вариант)
-kb = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text="Найти подругу"), KeyboardButton(text="Мой профиль")]
-], resize_keyboard=True)
+# 4. Клавиатура
+kb = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="Найти подругу"), KeyboardButton(text="Мой профиль")]],
+                         resize_keyboard=True)
 
-# Обработчик команды /start
+# 5. Обработчик команды /start
 @dp.message(Command("start"))
-async def start_message(message: types.Message):
-    user_id = message.from_user.id
-    cursor.execute("SELECT * FROM users WHERE id=?", (user_id,))
-    user = cursor.fetchone()
+async def start(message: types.Message):
+    await message.answer("Привет! Я помогу тебе найти подругу 😊", reply_markup=kb)
 
-    if user:
-        await message.answer("Привет! Я тебя помню 😊", reply_markup=kb)
-    else:
-        cursor.execute("INSERT INTO users (id) VALUES (?)", (user_id,))
-        conn.commit()
-        await message.answer("Привет! Добро пожаловать в бота для поиска подруг! 🩷", reply_markup=kb)
-
-# Запуск бота
+# 6. Запуск бота
 async def main():
-    print("🤖 Бот запущен и ждёт команды!")
-    dp.include_routers()  # В новой версии `include_router` не нужен
-    await bot.delete_webhook(drop_pending_updates=True)
+    print("Бот запущен!")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":

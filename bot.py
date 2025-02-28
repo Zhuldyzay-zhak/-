@@ -1,3 +1,7 @@
+import os
+TOKEN = os.getenv("API_TOKEN")
+
+bot = Bot(token=TOKEN)
 from aiogram import Bot, Dispatcher, types
 import asyncio
 

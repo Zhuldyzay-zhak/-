@@ -20,7 +20,9 @@ async def webhook(update: dict):
 
 async def main():
     logging.basicConfig(level=logging.INFO)
-    await bot.set_webhook("7781455167:AAGvyYjViBDEEXxPRofSYgJ7nAnmlAINLbg")
+   await bot.delete_webhook()
+await bot.start_polling()
+
     await dp.start_polling(bot)
 
 if __name__ == "__main__":

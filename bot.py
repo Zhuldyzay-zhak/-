@@ -5,7 +5,7 @@ import asyncio
 import logging
 import os
 
-TOKEN = "ТВОЙ_НОВЫЙ_ТОКЕН"
+TOKEN = "7781455167:AAGvyYjViBDEEXxPRofSYgJ7nAnmlAINLbg"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()

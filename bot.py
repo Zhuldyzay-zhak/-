@@ -20,7 +20,7 @@ async def webhook(update: dict):
 
 async def main():
     logging.basicConfig(level=logging.INFO)
-   await bot.delete_webhook()
+    await bot.delete_webhook()
 await bot.start_polling()
 
     await dp.start_polling(bot)
